@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:gravity="center"
+    android:layout_gravity="center"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:padding="16dp"
+    tools:context=".ui.AddTodoFragment">
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="match_parent"
+        android:textSize="28sp"
+        android:textAppearance="?attr/textAppearanceHeadline6"
+        android:text="Create TODO" />
+    <View
+        android:layout_width="0dp"
+        android:layout_height="8dp" />
+
+    <EditText
+        android:id="@+id/todo_edit_text"
+        android:layout_width="match_parent"
+        android:layout_height="48dp"
+        android:hint="Enter the TODO's name"
+        android:inputType="textCapSentences" />
+    <View
+        android:layout_width="0dp"
+        android:layout_height="8dp" />
+    <Button
+        android:id="@+id/add_button"
+        android:text="Add"
+        android:layout_width="wrap_content"
+        android:layout_height="48dp" />
+</LinearLayout>

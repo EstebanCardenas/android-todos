@@ -1,14 +1,13 @@
 package com.example.todos.ui.viewmodels
 
 import android.content.Context
-import androidx.lifecycle.ViewModel
-import androidx.lifecycle.ViewModelProvider
-import androidx.lifecycle.viewModelScope
+import androidx.lifecycle.*
 import com.example.todos.core.data.TodosRepository
 import com.example.todos.core.database.entities.Todo
 import com.example.todos.core.database.getDatabase
+import com.example.todos.ui.state.TodosState
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 
@@ -16,6 +15,9 @@ class TodosViewModel(
     private val todosRepository: TodosRepository
 ): ViewModel() {
     val todos: Flow<List<Todo>> = todosRepository.todos
+
+    private val _uiState = MutableStateFlow<TodosState>(TodosState())
+    val uiState: StateFlow<TodosState> = _uiState.asStateFlow()
 
     fun toggleTodoDone(todoId: Int) {
         viewModelScope.launch {
@@ -26,6 +28,29 @@ class TodosViewModel(
                 )
                 todosRepository.updateTodo(newTodo)
             }
+        }
+    }
+
+    fun onNewTodoNameChanged(value: String) {
+        _uiState.update {
+            it.copy(
+                newTodoName = value
+            )
+        }
+    }
+
+    fun addTodo() {
+        viewModelScope.launch {
+            todosRepository.addTodo(Todo(
+                name = _uiState.value.newTodoName!!,
+                isDone = false
+            ))
+        }
+    }
+
+    fun clearState() {
+        _uiState.update {
+            TodosState()
         }
     }
 

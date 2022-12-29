@@ -6,7 +6,7 @@ import androidx.room.Room
 import androidx.room.RoomDatabase
 import com.example.todos.core.database.entities.Todo
 
-@Database(entities = [Todo::class], version = 1)
+@Database(entities = [Todo::class], version = 2)
 abstract class TodoDatabase: RoomDatabase() {
     abstract fun todoDao(): TodoDao
 }
@@ -20,7 +20,9 @@ fun getDatabase(context: Context): TodoDatabase {
                 context.applicationContext,
                 TodoDatabase::class.java,
                 "todos-db"
-            ).build()
+            )
+                .fallbackToDestructiveMigration()
+                .build()
         }
     }
     return INSTANCE

@@ -13,4 +13,8 @@ class TodosRepository(private val database: TodoDatabase) {
     fun getTodoById(id: Int): Todo {
         return database.todoDao().getTodoById(id)
     }
+
+    suspend fun addTodo(todo: Todo) {
+        database.todoDao().insertTodo(todo)
+    }
 }
