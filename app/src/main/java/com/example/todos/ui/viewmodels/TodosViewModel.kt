@@ -48,6 +48,15 @@ class TodosViewModel(
         }
     }
 
+    fun deleteTodo(id: Int) {
+        viewModelScope.launch {
+            withContext(Dispatchers.IO) {
+                val todo = todosRepository.getTodoById(id)
+                todosRepository.deleteTodo(todo)
+            }
+        }
+    }
+
     fun clearState() {
         _uiState.update {
             TodosState()

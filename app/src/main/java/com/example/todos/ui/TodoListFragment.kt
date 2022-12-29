@@ -12,6 +12,7 @@ import com.example.todos.R
 import com.example.todos.databinding.FragmentTodoListBinding
 import com.example.todos.ui.adapters.TodosAdapter
 import com.example.todos.ui.viewmodels.TodosViewModel
+import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import kotlinx.coroutines.launch
 
 class TodoListFragment : Fragment() {
@@ -33,7 +34,10 @@ class TodoListFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        val adapter = TodosAdapter(viewModel::toggleTodoDone)
+        val adapter = TodosAdapter(
+            onTodoTap =  viewModel::toggleTodoDone,
+            onTodoLongTap = ::showTodoDeletionPrompt
+        )
         binding.todoRecyclerView.adapter = adapter
         binding.addFab.setOnClickListener {
             viewModel.clearState()
@@ -44,5 +48,19 @@ class TodoListFragment : Fragment() {
                 adapter.submitList(it)
             }
         }
+    }
+
+    private fun showTodoDeletionPrompt(id: Int) {
+        MaterialAlertDialogBuilder(requireContext())
+            .setTitle("Delete TODO")
+            .setMessage("Are you sure you want to delete this TODO?")
+            .setNegativeButton("NO") { dialog, _ ->
+                dialog.dismiss()
+            }
+            .setPositiveButton("YES") { dialog, _ ->
+                viewModel.deleteTodo(id)
+                dialog.dismiss()
+            }
+            .show()
     }
 }
