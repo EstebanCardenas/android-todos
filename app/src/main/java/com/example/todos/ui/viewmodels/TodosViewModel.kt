@@ -2,9 +2,12 @@ package com.example.todos.ui.viewmodels
 
 import android.content.Context
 import androidx.lifecycle.*
+import com.example.todos.core.data.CategoriesRepository
 import com.example.todos.core.data.TodosRepository
+import com.example.todos.core.database.entities.Category
 import com.example.todos.core.database.entities.Todo
 import com.example.todos.core.database.getDatabase
+import com.example.todos.core.database.relations.CategoryWithTodos
 import com.example.todos.ui.state.TodosState
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.*
@@ -12,12 +15,18 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 
 class TodosViewModel(
-    private val todosRepository: TodosRepository
+    private val todosRepository: TodosRepository,
+    private val categoriesRepository: CategoriesRepository,
 ): ViewModel() {
-    val todos: Flow<List<Todo>> = todosRepository.todos
+    val categories: Flow<List<Category>> = categoriesRepository.categories
+    val activeTodos: Flow<List<Todo>> = todosRepository.getActiveTodos()
 
-    private val _uiState = MutableStateFlow<TodosState>(TodosState())
+    private val _uiState = MutableStateFlow(TodosState())
     val uiState: StateFlow<TodosState> = _uiState.asStateFlow()
+
+    fun getTodosByCategoryId(categoryId: Int): Flow<CategoryWithTodos> {
+        return todosRepository.getTodosByCategoryId(categoryId)
+    }
 
     fun toggleTodoDone(todoId: Int) {
         viewModelScope.launch {
@@ -39,11 +48,12 @@ class TodosViewModel(
         }
     }
 
-    fun addTodo() {
+    fun addTodo(categoryId: Int) {
         viewModelScope.launch {
             todosRepository.addTodo(Todo(
                 name = _uiState.value.newTodoName!!,
-                isDone = false
+                isDone = false,
+                categoryId = categoryId
             ))
         }
     }
@@ -57,6 +67,31 @@ class TodosViewModel(
         }
     }
 
+    fun createCategory() {
+        viewModelScope.launch {
+            categoriesRepository.createCategory(Category(
+                name = _uiState.value.newTodoName!!,
+            ))
+        }
+    }
+
+    fun deleteCategory(categoryId: Int) {
+        viewModelScope.launch {
+            withContext(Dispatchers.IO) {
+                val category: Category = categoriesRepository.getCategoryById(categoryId)
+                categoriesRepository.deleteCategory(category)
+            }
+        }
+    }
+
+    fun getNumberOfTasksForCategory(categoryId: Int): Flow<Int> {
+        return categoriesRepository.getNumberOfTasksForCategory(categoryId)
+    }
+
+    suspend fun getCategoryById(id: Int): Category {
+        return categoriesRepository.getCategoryById(id)
+    }
+
     fun clearState() {
         _uiState.update {
             TodosState()
@@ -68,7 +103,8 @@ class TodosViewModel(
             if (modelClass.isAssignableFrom(TodosViewModel::class.java)) {
                 @Suppress("UNCHECKED_CAST")
                 return TodosViewModel(
-                    TodosRepository(getDatabase(context))
+                    TodosRepository(getDatabase(context)),
+                    CategoriesRepository(getDatabase(context)),
                 ) as T
             }
             throw IllegalArgumentException("Unable to construct viewmodel")

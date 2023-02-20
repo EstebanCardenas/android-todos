@@ -3,7 +3,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/main_nav_graph"
-    app:startDestination="@id/todoListFragment">
+    app:startDestination="@id/categoryListFragment">
 
     <fragment
         android:id="@+id/todoListFragment"
@@ -17,10 +17,38 @@
             app:exitAnim="@anim/nav_default_exit_anim"
             app:popEnterAnim="@anim/nav_default_enter_anim"
             app:popExitAnim="@anim/nav_default_exit_anim" />
+        <argument
+            android:name="categoryId"
+            app:argType="integer" />
     </fragment>
     <fragment
         android:id="@+id/addTodoFragment"
         android:name="com.example.todos.ui.AddTodoFragment"
         android:label="Add TODO"
-        tools:layout="@layout/fragment_add_todo" />
+        tools:layout="@layout/fragment_add_todo" >
+        <argument
+            android:name="categoryId"
+            app:argType="string"
+            app:nullable="true" />
+    </fragment>
+    <fragment
+        android:id="@+id/categoryListFragment"
+        android:name="com.example.todos.ui.CategoryListFragment"
+        android:label="Tasks"
+        tools:layout="@layout/fragment_category_list">
+        <action
+            android:id="@+id/action_categoryListFragment_to_todoListFragment"
+            app:destination="@id/todoListFragment"
+            app:enterAnim="@anim/nav_default_enter_anim"
+            app:exitAnim="@anim/nav_default_exit_anim"
+            app:popEnterAnim="@anim/nav_default_enter_anim"
+            app:popExitAnim="@anim/nav_default_exit_anim" />
+        <action
+            android:id="@+id/action_categoryListFragment_to_addTodoFragment"
+            app:destination="@id/addTodoFragment"
+            app:enterAnim="@anim/nav_default_enter_anim"
+            app:exitAnim="@anim/nav_default_exit_anim"
+            app:popEnterAnim="@anim/nav_default_enter_anim"
+            app:popExitAnim="@anim/nav_default_exit_anim" />
+    </fragment>
 </navigation>

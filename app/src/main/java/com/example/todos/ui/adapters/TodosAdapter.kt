@@ -21,6 +21,9 @@ class TodosAdapter(
             binding.todoCard.setOnClickListener {
                 onTodoTap(todo.id)
             }
+            binding.todoCheckbox.setOnClickListener {
+                onTodoTap(todo.id)
+            }
             binding.todoCard.setOnLongClickListener {
                 onTodoLongTap(todo.id)
                 true

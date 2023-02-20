@@ -4,11 +4,17 @@ import android.content.Context
 import androidx.room.Database
 import androidx.room.Room
 import androidx.room.RoomDatabase
+import com.example.todos.core.database.daos.CategoryDao
+import com.example.todos.core.database.daos.CategoryWithTodosDao
+import com.example.todos.core.database.daos.TodoDao
+import com.example.todos.core.database.entities.Category
 import com.example.todos.core.database.entities.Todo
 
-@Database(entities = [Todo::class], version = 2)
+@Database(entities = [Todo::class, Category::class], version = 5)
 abstract class TodoDatabase: RoomDatabase() {
     abstract fun todoDao(): TodoDao
+    abstract fun categoryDao(): CategoryDao
+    abstract fun categoryWithTodosDao(): CategoryWithTodosDao
 }
 
 private lateinit var INSTANCE: TodoDatabase

@@ -3,6 +3,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:id="@+id/todo_card"
     app:cardCornerRadius="8dp"
+    android:backgroundTint="@color/dark_blue"
     android:layout_marginHorizontal="2dp"
     android:layout_marginBottom="8dp"
     android:layout_width="match_parent"
@@ -23,6 +24,7 @@
         <TextView
             android:id="@+id/todo_text_view"
             android:text="My Todo"
+            android:textColor="@color/white"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content" />
     </LinearLayout>

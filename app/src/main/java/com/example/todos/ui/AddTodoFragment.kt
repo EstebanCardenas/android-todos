@@ -9,17 +9,27 @@ import androidx.core.widget.doOnTextChanged
 import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
+import com.example.todos.MainActivity
 import com.example.todos.R
 import com.example.todos.databinding.FragmentAddTodoBinding
 import com.example.todos.ui.viewmodels.TodosViewModel
 import kotlinx.coroutines.flow.collectIndexed
 import kotlinx.coroutines.launch
+import kotlin.properties.Delegates
 
 class AddTodoFragment : Fragment() {
     private val viewModel: TodosViewModel by activityViewModels {
         TodosViewModel.Factory(requireContext().applicationContext)
     }
     private lateinit var binding: FragmentAddTodoBinding
+    private var categoryId: Int? = null
+    private val shouldCreateCategory
+        get() = categoryId == null
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        categoryId = arguments?.getString("categoryId")?.toInt()
+    }
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -38,18 +48,37 @@ class AddTodoFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
+        updateLabels()
         binding.todoEditText.doOnTextChanged { text, _, _, _ ->
             viewModel.onNewTodoNameChanged(text.toString())
         }
-        binding.addButton.setOnClickListener {
-            viewModel.addTodo()
-            findNavController().popBackStack()
-        }
+        binding.addButton.setOnClickListener { onAddTap() }
         lifecycleScope.launch {
             viewModel.uiState.collect {
                 binding.todoEditText.error = it.newTodoNameError
                 binding.addButton.isEnabled = it.canAddTodo
             }
+        }
+    }
+
+    private fun onAddTap() {
+        if (shouldCreateCategory) {
+            viewModel.createCategory()
+        } else {
+            viewModel.addTodo(categoryId!!)
+        }
+        findNavController().popBackStack()
+    }
+
+    private fun updateLabels() {
+        if (shouldCreateCategory) {
+            binding.title.text = "Create Category"
+            binding.todoEditText.hint = binding.todoEditText.hint.replace(
+                Regex("TODO"),
+                "category"
+            )
+            (requireActivity() as MainActivity).supportActionBar?.title =
+                "Add Category"
         }
     }
 }

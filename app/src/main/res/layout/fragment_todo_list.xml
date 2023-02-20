@@ -11,9 +11,9 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="16dp"
         android:layout_marginStart="16dp"
-        android:text="TODO List"
+        android:text="TODOs for category"
         android:textAppearance="?attr/textAppearanceTitleLarge"
-        android:textSize="32sp"
+        android:textSize="24sp"
         android:textFontWeight="500"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
