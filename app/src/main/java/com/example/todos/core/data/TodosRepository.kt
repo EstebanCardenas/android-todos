@@ -4,10 +4,19 @@ import com.example.todos.core.database.TodoDatabase
 import com.example.todos.core.database.entities.Todo
 import com.example.todos.core.database.relations.CategoryWithTodos
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.map
 
 class TodosRepository(private val database: TodoDatabase) {
     fun getTodosByCategoryId(categoryId: Int): Flow<CategoryWithTodos> {
-        return database.categoryWithTodosDao().getTodosFromCategoryId(categoryId)
+        val categoryWithTodosFlow: Flow<CategoryWithTodos> =
+            database.categoryWithTodosDao().getTodosFromCategoryId(categoryId)
+        return categoryWithTodosFlow.map {
+            val sortedTodos: List<Todo> = listOf(*it.todos.toTypedArray())
+                .sortedBy { todo -> todo.isDone }
+            it.copy(
+                todos = sortedTodos,
+            )
+        }
     }
 
     suspend fun updateTodo(todo: Todo) {

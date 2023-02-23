@@ -1,6 +1,7 @@
 package com.example.todos.ui.adapters
 
 import android.view.LayoutInflater
+import android.view.View
 import android.view.ViewGroup
 import androidx.lifecycle.LifecycleCoroutineScope
 import androidx.recyclerview.widget.DiffUtil
@@ -9,7 +10,6 @@ import androidx.recyclerview.widget.RecyclerView
 import com.example.todos.core.database.entities.Category
 import com.example.todos.databinding.CategoryCardBinding
 import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
 
 class CategoriesAdapter(
@@ -30,6 +30,7 @@ class CategoriesAdapter(
                 onCategoryLongTap?.invoke(category.id)
                 true
             }
+            binding.starImageView.visibility = if (category.isFavorite) View.VISIBLE else View.GONE
             viewLifecycleScope.launch {
                 getNumberOfTasksForCategory(category.id).collect {
                     val tasksText = if (it == 1) "task" else "tasks"

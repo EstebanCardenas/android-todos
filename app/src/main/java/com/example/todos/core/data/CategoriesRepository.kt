@@ -23,4 +23,8 @@ class CategoriesRepository(private val database: TodoDatabase) {
     fun getNumberOfTasksForCategory(categoryId: Int): Flow<Int> {
         return database.categoryWithTodosDao().getNumberOfTasksForCategory(categoryId)
     }
+
+    suspend fun updateCategory(category: Category) {
+        database.categoryDao().updateCategory(category)
+    }
 }

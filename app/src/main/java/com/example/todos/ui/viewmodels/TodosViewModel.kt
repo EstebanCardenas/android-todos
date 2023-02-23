@@ -92,6 +92,20 @@ class TodosViewModel(
         return categoriesRepository.getCategoryById(id)
     }
 
+    fun toggleCategoryFavorite(
+        categoryId: Int,
+        onCategoryUpdated: ((category: Category) -> Unit)?
+    ) {
+        viewModelScope.launch {
+            var category = getCategoryById(categoryId)
+            category = category.copy(
+                isFavorite = !category.isFavorite
+            )
+            categoriesRepository.updateCategory(category)
+            onCategoryUpdated?.invoke(category)
+        }
+    }
+
     fun clearState() {
         _uiState.update {
             TodosState()

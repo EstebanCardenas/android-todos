@@ -10,7 +10,7 @@ import com.example.todos.core.database.daos.TodoDao
 import com.example.todos.core.database.entities.Category
 import com.example.todos.core.database.entities.Todo
 
-@Database(entities = [Todo::class, Category::class], version = 5)
+@Database(entities = [Todo::class, Category::class], version = 6)
 abstract class TodoDatabase: RoomDatabase() {
     abstract fun todoDao(): TodoDao
     abstract fun categoryDao(): CategoryDao
