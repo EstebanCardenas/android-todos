@@ -91,8 +91,8 @@ class TodoListFragment : Fragment(), MenuProvider {
         }
     }
 
-    override fun onPause() {
-        super.onPause()
+    override fun onDestroyView() {
+        super.onDestroyView()
         requireActivity().removeMenuProvider(this)
     }
 
